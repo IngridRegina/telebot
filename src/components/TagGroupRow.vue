@@ -53,7 +53,13 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-snackbar v-model="isSnackbarVisible" :timeout="3000" :color="snackbarColor" transition="scroll-y-reverse-transition">
+    <v-snackbar
+        v-model="isSnackbarVisible"
+        :timeout="1000"
+        :color="snackbarColor"
+        location="bottom right"
+        transition="scroll-y-reverse-transition"
+    >
       {{ snackbarMessage }}
       <template #actions>
         <v-btn

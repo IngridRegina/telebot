@@ -64,8 +64,9 @@
     </v-dialog>
     <v-snackbar
         v-model="isSnackbarVisible"
-        :timeout="3000"
+        :timeout="1000"
         :color="snackbarColor"
+        location="bottom right"
         transition="scroll-y-reverse-transition"
     >
       {{ snackbarMessage }}
