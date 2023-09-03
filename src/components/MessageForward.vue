@@ -77,8 +77,8 @@
 <script setup>
 import {
   reactive,
-  watch,
   ref,
+  watchEffect,
 } from 'vue'
 import {
   useCreateMessageForwardMutation,
@@ -114,12 +114,9 @@ const props = defineProps({
 })
 
 const isFormValid = ref(false)
+const isComponentCreated = ref(false)
 
-const form = reactive({
-  from_chat: props.fromChat || '',
-  to_chats: props.toChats || [],
-  id: props.forwardId || undefined,
-})
+const form = reactive({})
 
 const rules = [
   value => {
@@ -129,7 +126,7 @@ const rules = [
   },
 ]
 
-const isEditing = ref(!props.forwardId)
+const isEditing = ref()
 const isConfirmationDialogOpen = ref(false)
 
 const handleWantToDeleteForward = async () => {
@@ -176,11 +173,14 @@ const createOrEditMessageForward = async (form) => {
   }
 }
 
-watch(() => [props.fromChat, props.toChats, props.forwardId], ([newFromChat, newToChats, newForwardId]) => {
-  form.from_chat = newFromChat
-  form.to_chats = newToChats
-  form.id = newForwardId
-  isEditing.value = false
+watchEffect(() => {
+  if (isComponentCreated.value === false) {
+    form.from_chat = props.fromChat || ''
+    form.to_chats = props.toChats || []
+    form.id = props.forwardId || undefined
+    isEditing.value = !props.forwardId
+    isComponentCreated.value = true
+  }
 })
 </script>
 

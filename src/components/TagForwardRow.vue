@@ -85,8 +85,8 @@
 <script setup>
 import {
   reactive,
-  watch,
   ref,
+  watchEffect,
 } from 'vue'
 import {
   useCreateTagForwardMutation,
@@ -126,6 +126,7 @@ const props = defineProps({
 })
 
 const isFormValid = ref(false)
+const isComponentCreated = ref(false)
 
 const rules = [
   value => {
@@ -135,12 +136,7 @@ const rules = [
   },
 ]
 
-const form = reactive({
-  tag: props.tag || '',
-  to_chats: props.toChats || [],
-  allowed_users: props.allowedUsers || [],
-  id: props.forwardId || undefined,
-})
+const form = reactive({})
 
 const isEditing = ref(!props.forwardId)
 const isConfirmationDialogOpen = ref(false)
@@ -189,12 +185,15 @@ const createOrEditTagForward = async (form) => {
   }
 }
 
-watch(() => [props.tag, props.toChats, props.forwardId, props.allowedUsers], ([newTag, newToChats, newTagId, newAllowedUsers]) => {
-  form.tag = newTag
-  form.to_chats = newToChats
-  form.allowed_users = newAllowedUsers
-  form.id = newTagId
-  isEditing.value = false
+watchEffect(() => {
+  if (isComponentCreated.value === false) {
+    form.tag = props.tag || ''
+    form.to_chats = props.toChats || []
+    form.allowed_users = props.allowedUsers || []
+    form.id = props.forwardId || undefined
+    isEditing.value = !props.forwardId
+    isComponentCreated.value = true
+  }
 })
 </script>
 
