@@ -12,7 +12,7 @@
           @upsert="(item) => updateForwardRow(index, item)"
       />
       <v-btn
-          color="#2e86c1"
+          color="light-blue-darken-2"
           icon="mdi-plus"
           position="fixed"
           size="large"
