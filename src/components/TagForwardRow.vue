@@ -16,7 +16,6 @@
         class="telebot-form__combobox"
         label="To chats (chat ID-s)"
         multiple
-        clearable
         chips
         closable-chips
         :rules="rules"
@@ -26,7 +25,6 @@
         class="telebot-form__combobox"
         label="Allowed users (ID-s)"
         multiple
-        clearable
         chips
         closable-chips
         :rules="rules"

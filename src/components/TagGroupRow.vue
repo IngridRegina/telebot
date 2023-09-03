@@ -16,7 +16,6 @@
         class="telebot-form__combobox"
         label="Usernames"
         multiple
-        clearable
         chips
         closable-chips
         :rules="rules"
