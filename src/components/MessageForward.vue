@@ -59,7 +59,6 @@
     <v-snackbar
         v-model="isSnackbarVisible"
         :timeout="1000"
-        location="bottom right"
         :color="snackbarColor"
         transition="scroll-y-reverse-transition"
     >

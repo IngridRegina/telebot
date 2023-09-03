@@ -66,7 +66,6 @@
         v-model="isSnackbarVisible"
         :timeout="1000"
         :color="snackbarColor"
-        location="bottom right"
         transition="scroll-y-reverse-transition"
     >
       {{ snackbarMessage }}
