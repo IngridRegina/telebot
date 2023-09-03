@@ -1,0 +1,17 @@
+.telebot-view {
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-bottom: 100px;
+
+    @media (max-width: 768px) {
+      gap: 40px;
+    }
+  }
+
+  .v-btn {
+    bottom: 24px;
+    right: 24px;
+  }
+}

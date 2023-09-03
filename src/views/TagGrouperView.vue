@@ -1,13 +1,14 @@
 <template>
-  <section class="tag-grouper">
+  <section class="telebot-view">
     <h1 class="text-h4 mb-10">Tag Grouper</h1>
-    <div class="tag-grouper__list">
+    <div class="telebot-view__list">
       <TagGroupRow
           v-for="(group, index) in groups"
-          :key="index"
+          :key="'tag-group-' + index"
           :tag-id="group.id"
           :tag="group.tag"
           :usernames="group.usernames"
+          :index="index + 1"
           @delete="deleteTagGroupRow(index)"
       />
       <v-btn
@@ -50,21 +51,5 @@ const deleteTagGroupRow = (index) => {
 </script>
 
 <style lang="scss" scoped>
-.tag-grouper {
-  &__list {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    padding-bottom: 100px;
-
-    @media (max-width: 768px) {
-      gap: 40px;
-    }
-  }
-
-  .v-btn {
-    bottom: 24px;
-    right: 24px;
-  }
-}
+@import "@/assets/scss/views/default";
 </style>

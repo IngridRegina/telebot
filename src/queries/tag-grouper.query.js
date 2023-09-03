@@ -32,8 +32,8 @@ export function useEditTagGroupMutation() {
 
       const { data } = await axios.put(
         `/api/tag-groups/${form.id}/`, {
-          from_chat: form.from_chat,
-          to_chats: form.to_chats
+          tag: form.tag,
+          usernames: form.usernames
         },
       )
       return data

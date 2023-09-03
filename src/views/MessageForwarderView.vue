@@ -1,10 +1,11 @@
 <template>
-  <section class="message-forwarder">
+  <section class="telebot-view">
     <h1 class="text-h4 mb-10">Message Forwarder</h1>
-    <div class="message-forwarder__list">
+    <div class="telebot-view__list">
       <MessageForward
           v-for="(forward, index) in forwards"
-          :key="index"
+          :key="'message-forward-' + index"
+          :index="index + 1"
           :forward-id="forward.id"
           :from-chat="forward.from_chat"
           :to-chats="forward.to_chats"
@@ -44,27 +45,11 @@ onBeforeMount(async () => {
   }
 })
 
-const deleteForwardRow = (index) => {
+const deleteForwardRow = async (index) => {
   forwards.value.splice(index, 1)
 }
 </script>
 
 <style lang="scss" scoped>
-.message-forwarder {
-  &__list {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    padding-bottom: 100px;
-
-    @media (max-width: 768px) {
-      gap: 40px;
-    }
-  }
-
-  .v-btn {
-    bottom: 24px;
-    right: 24px;
-  }
-}
+@import "@/assets/scss/views/default";
 </style>

@@ -1,0 +1,19 @@
+.telebot-form {
+  display: flex;
+  column-gap: 24px;
+  row-gap: 8px;
+  align-items: flex-start;
+
+  &__input {
+    flex: 1;
+  }
+
+  &__combobox {
+    flex: 2;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

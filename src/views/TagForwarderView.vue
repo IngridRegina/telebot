@@ -1,13 +1,15 @@
 <template>
-  <section class="tag-forwarder">
+  <section class="telebot-view">
     <h1 class="text-h4 mb-10">Tag Forwarder</h1>
-    <div class="tag-forwarder__list">
+    <div class="telebot-view__list">
       <TagForwardRow
           v-for="(forward, index) in forwards"
-          :key="index"
+          :key="'tag-forward-' + index"
+          :index="index + 1"
           :forward-id="forward.id"
           :tag="forward.tag"
           :to-chats="forward.to_chats"
+          :allowed-users="forward.allowed_users"
           @delete="deleteForwardRow(index)"
       />
       <v-btn
@@ -50,21 +52,5 @@ const deleteForwardRow = (index) => {
 </script>
 
 <style lang="scss" scoped>
-.tag-forwarder {
-  &__list {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    padding-bottom: 100px;
-
-    @media (max-width: 768px) {
-      gap: 40px;
-    }
-  }
-
-  .v-btn {
-    bottom: 24px;
-    right: 24px;
-  }
-}
+@import "@/assets/scss/views/default";
 </style>

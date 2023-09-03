@@ -9,8 +9,6 @@ export function useGetTagForwardsQuery() {
       )
       return data
     },
-    cacheTime: 0,
-    staleTime: 0,
   })
 }
 
@@ -20,7 +18,8 @@ export function useCreateTagForwardMutation() {
       const { data } = await axios.post(
         '/api/tagforwardings/', {
           tag: form.tag,
-          to_chats: form.to_chats
+          to_chats: form.to_chats,
+          allowed_users: form.allowed_users,
         },
       )
       return data
@@ -39,7 +38,8 @@ export function useEditTagForwardMutation() {
       const { data } = await axios.put(
         `/api/tagforwardings/${form.id}/`, {
           tag: form.tag,
-          to_chats: form.to_chats
+          to_chats: form.to_chats,
+          allowed_users: form.allowed_users,
         },
       )
       return data
