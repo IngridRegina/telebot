@@ -1,6 +1,6 @@
 # telebot
 
-This template should help get you started developing with Vue 3 in Vite.
+UI for forwarding telegram messages & creating tag groups
 
 ## Customize configuration
 
