@@ -8,7 +8,6 @@
           :tag-id="group.id"
           :tag="group.tag"
           :usernames="group.usernames"
-          :index="index + 1"
           @delete="deleteTagGroupRow(index)"
           @upsert="(item) => updateTagGroupRow(index, item)"
       />

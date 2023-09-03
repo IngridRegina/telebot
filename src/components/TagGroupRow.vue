@@ -103,10 +103,6 @@ const props = defineProps({
     type: Number,
     default: undefined,
   },
-  index: {
-    type: Number,
-    required: true,
-  },
 })
 
 const isFormValid = ref(false)

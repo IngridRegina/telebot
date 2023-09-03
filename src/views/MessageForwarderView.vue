@@ -5,7 +5,6 @@
       <MessageForward
           v-for="(forward, index) in forwards"
           :key="'message-forward-' + index"
-          :index="index + 1"
           :forward-id="forward.id"
           :from-chat="forward.from_chat"
           :to-chats="forward.to_chats"

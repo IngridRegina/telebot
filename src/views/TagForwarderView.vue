@@ -5,7 +5,6 @@
       <TagForwardRow
           v-for="(forward, index) in forwards"
           :key="'tag-forward-' + index"
-          :index="index + 1"
           :forward-id="forward.id"
           :tag="forward.tag"
           :to-chats="forward.to_chats"
