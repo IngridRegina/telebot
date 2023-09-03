@@ -1,10 +1,14 @@
 <template>
-  <v-form :id="'tagforward_' + index" class="telebot-form" @submit.prevent="createOrEditTagForward(form)">
+  <v-form
+      v-model="isFormValid"
+      class="telebot-form"
+      :disabled="!isEditing"
+      @submit.prevent="createOrEditTagForward(form)"
+  >
     <v-text-field
         v-model="form.tag"
         class="telebot-form__input"
         label="@Tag"
-        :disabled="!isEditing"
         :rules="rules"
     />
     <v-combobox
@@ -15,7 +19,6 @@
         clearable
         chips
         closable-chips
-        :disabled="!isEditing"
         :rules="rules"
     />
     <v-combobox
@@ -26,7 +29,6 @@
         clearable
         chips
         closable-chips
-        :disabled="!isEditing"
         :rules="rules"
     />
     <v-btn
@@ -123,6 +125,8 @@ const props = defineProps({
   }
 })
 
+const isFormValid = ref(false)
+
 const rules = [
   value => {
     if (value.length) return true
@@ -160,25 +164,27 @@ const handleDeleteTagForward = async (forwardId) => {
 }
 
 const createOrEditTagForward = async (form) => {
-  if (form.id) {
-    try {
-      const editedTagForward = await editTagForwardMutation(form)
-      Object.assign(form, editedTagForward)
-      emits('upsert', form)
-      showSnackbar('Tag forward successfully edited', 'green-darken-2')
-      isEditing.value = false
-    } catch (error) {
-      showSnackbar('Error editing tag forward', 'red-lighten-1')
-    }
-  } else {
-    try {
-      const newTagForward = await createTagForwardMutation(form)
-      Object.assign(form, newTagForward)
-      emits('upsert', form)
-      showSnackbar('Tag forward successfully created', 'green-darken-2')
-      isEditing.value = false
-    } catch (error) {
-      showSnackbar('Error creating tag forward', 'red-lighten-1')
+  if (isFormValid.value) {
+    if (form.id) {
+      try {
+        const editedTagForward = await editTagForwardMutation(form)
+        Object.assign(form, editedTagForward)
+        emits('upsert', form)
+        showSnackbar('Tag forward successfully edited', 'green-darken-2')
+        isEditing.value = false
+      } catch (error) {
+        showSnackbar('Error editing tag forward', 'red-lighten-1')
+      }
+    } else {
+      try {
+        const newTagForward = await createTagForwardMutation(form)
+        Object.assign(form, newTagForward)
+        emits('upsert', form)
+        showSnackbar('Tag forward successfully created', 'green-darken-2')
+        isEditing.value = false
+      } catch (error) {
+        showSnackbar('Error creating tag forward', 'red-lighten-1')
+      }
     }
   }
 }

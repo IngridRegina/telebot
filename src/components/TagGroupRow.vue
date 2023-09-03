@@ -1,14 +1,14 @@
 <template>
   <v-form
-      :id="'taggroup_' + index"
+      v-model="isFormValid"
       class="telebot-form"
+      :disabled="!isEditing"
       @submit.prevent="createOrEditTagGroup(form)"
   >
     <v-text-field
         v-model="form.tag"
         class="telebot-form__input"
         label="@Tag"
-        :disabled="!isEditing"
         :rules="rules"
     />
     <v-combobox
@@ -19,7 +19,6 @@
         clearable
         chips
         closable-chips
-        :disabled="!isEditing"
         :rules="rules"
     />
     <v-btn
@@ -110,6 +109,8 @@ const props = defineProps({
   },
 })
 
+const isFormValid = ref(false)
+
 const rules = [
   value => {
     if (value.length) return true
@@ -146,25 +147,27 @@ const handleDeleteTagGroup = async (tagId) => {
 }
 
 const createOrEditTagGroup = async (form) => {
-  if (form.id) {
-    try {
-      const editedTagGroup = await editTagGroupMutation(form)
-      Object.assign(form, editedTagGroup)
-      emits('upsert', form)
-      showSnackbar('Tag group successfully edited', 'green-darken-2')
-      isEditing.value = false
-    } catch (e) {
-      showSnackbar('Error editing tag group', 'red-lighten-1')
-    }
-  } else {
-    try {
-      const newTagGroup = await createTagGroupMutation(form)
-      Object.assign(form, newTagGroup)
-      emits('upsert', form)
-      showSnackbar('Tag group successfully created', 'green-darken-2')
-      isEditing.value = false
-    } catch (e) {
-      showSnackbar('Error creating tag group', 'red-lighten-1')
+  if (isFormValid.value) {
+    if (form.id) {
+      try {
+        const editedTagGroup = await editTagGroupMutation(form)
+        Object.assign(form, editedTagGroup)
+        emits('upsert', form)
+        showSnackbar('Tag group successfully edited', 'green-darken-2')
+        isEditing.value = false
+      } catch (e) {
+        showSnackbar('Error editing tag group', 'red-lighten-1')
+      }
+    } else {
+      try {
+        const newTagGroup = await createTagGroupMutation(form)
+        Object.assign(form, newTagGroup)
+        emits('upsert', form)
+        showSnackbar('Tag group successfully created', 'green-darken-2')
+        isEditing.value = false
+      } catch (e) {
+        showSnackbar('Error creating tag group', 'red-lighten-1')
+      }
     }
   }
 }

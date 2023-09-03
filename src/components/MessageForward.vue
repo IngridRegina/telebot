@@ -1,5 +1,6 @@
 <template>
   <v-form
+      v-model="isFormValid"
       class="telebot-form"
       :disabled="!isEditing"
       @submit.prevent="createOrEditMessageForward(form)"
@@ -112,6 +113,8 @@ const props = defineProps({
   }
 })
 
+const isFormValid = ref(false)
+
 const form = reactive({
   from_chat: props.fromChat || '',
   to_chats: props.toChats || [],
@@ -148,25 +151,27 @@ const handleDeleteForward = async () => {
 }
 
 const createOrEditMessageForward = async (form) => {
-  if (form.id) {
-    try {
-      const editedForward = await editMessageForwardMutation(form)
-      Object.assign(form, editedForward)
-      emits('upsert', form)
-      showSnackbar('Message forward successfully edited', 'green-darken-2')
-      isEditing.value = false
-    } catch (e) {
-      showSnackbar('Error editing message forward', 'red-lighten-1')
-    }
-  } else {
-    try {
-      const newForward = await createMessageForwardMutation(form)
-      Object.assign(form, newForward)
-      emits('upsert', form)
-      showSnackbar('Message forward successfully created', 'green-darken-2')
-      isEditing.value = false
-    } catch (e) {
-      showSnackbar('Error creating message forward', 'red-lighten-1')
+  if (isFormValid.value) {
+    if (form.id) {
+      try {
+        const editedForward = await editMessageForwardMutation(form)
+        Object.assign(form, editedForward)
+        emits('upsert', form)
+        showSnackbar('Message forward successfully edited', 'green-darken-2')
+        isEditing.value = false
+      } catch (e) {
+        showSnackbar('Error editing message forward', 'red-lighten-1')
+      }
+    } else {
+      try {
+        const newForward = await createMessageForwardMutation(form)
+        Object.assign(form, newForward)
+        emits('upsert', form)
+        showSnackbar('Message forward successfully created', 'green-darken-2')
+        isEditing.value = false
+      } catch (e) {
+        showSnackbar('Error creating message forward', 'red-lighten-1')
+      }
     }
   }
 }
