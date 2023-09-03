@@ -28,13 +28,11 @@ import { useGetTagGroupsQuery } from '@/queries/tag-grouper.query'
 import { onBeforeMount, ref } from "vue"
 import TagGroupRow from "@/components/TagGroupRow.vue"
 
-const tagGroupCount = ref(1)
-const groups = ref([''])
+const groups = ref([])
 
 const { data: tagGroups, suspense: suspenseTagGroups } = useGetTagGroupsQuery()
 
 const addTagGroupRow = () => {
-  tagGroupCount.value++
   groups.value.push({})
 }
 
@@ -42,6 +40,8 @@ onBeforeMount(async () => {
   await suspenseTagGroups()
   if (tagGroups.value?.results?.length) {
     groups.value = [...tagGroups.value.results]
+  } else {
+    groups.value = [{}]
   }
 })
 

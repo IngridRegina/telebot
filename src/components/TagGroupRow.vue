@@ -74,7 +74,6 @@
 import {
   reactive,
   ref,
-  watchEffect,
 } from 'vue'
 import {
   useCreateTagGroupMutation,
@@ -106,7 +105,6 @@ const props = defineProps({
 })
 
 const isFormValid = ref(false)
-const isComponentCreated = ref(false)
 
 const rules = [
   value => {
@@ -116,7 +114,11 @@ const rules = [
   },
 ]
 
-const form = reactive({})
+const form = reactive({
+  tag: props.tag || '',
+  usernames: props.usernames || [],
+  id: props.tagId || undefined,
+})
 
 const isEditing = ref(!props.tagId)
 const isConfirmationDialogOpen = ref(false)
@@ -164,16 +166,6 @@ const createOrEditTagGroup = async (form) => {
     }
   }
 }
-
-watchEffect(() => {
-  if (isComponentCreated.value === false) {
-    form.tag = props.tag || ''
-    form.usernames = props.usernames || []
-    form.id = props.tagId || undefined
-    isEditing.value = !props.tagId
-    isComponentCreated.value = true
-  }
-})
 </script>
 
 <style lang="scss" scoped>

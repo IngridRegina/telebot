@@ -78,7 +78,6 @@
 import {
   reactive,
   ref,
-  watchEffect,
 } from 'vue'
 import {
   useCreateMessageForwardMutation,
@@ -110,9 +109,12 @@ const props = defineProps({
 })
 
 const isFormValid = ref(false)
-const isComponentCreated = ref(false)
 
-const form = reactive({})
+const form = reactive({
+  from_chat: props.fromChat || '',
+  to_chats: props.toChats || [],
+  id: props.forwardId || undefined,
+})
 
 const rules = [
   value => {
@@ -168,16 +170,6 @@ const createOrEditMessageForward = async (form) => {
     }
   }
 }
-
-watchEffect(() => {
-  if (isComponentCreated.value === false) {
-    form.from_chat = props.fromChat || ''
-    form.to_chats = props.toChats || []
-    form.id = props.forwardId || undefined
-    isEditing.value = !props.forwardId
-    isComponentCreated.value = true
-  }
-})
 </script>
 
 <style lang="scss" scoped>

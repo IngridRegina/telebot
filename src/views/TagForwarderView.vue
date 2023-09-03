@@ -29,13 +29,11 @@ import { useGetTagForwardsQuery} from '@/queries/tag-forwarder.query'
 import TagForwardRow from '@/components/TagForwardRow.vue'
 import { onBeforeMount, ref } from "vue"
 
-const forwardCount = ref(1)
-const forwards = ref([''])
+const forwards = ref([])
 
 const { data: tagForwards, suspense: suspenseTagForwards } = useGetTagForwardsQuery()
 
 const addForwardItem = () => {
-  forwardCount.value++
   forwards.value.push({})
 }
 
@@ -43,6 +41,8 @@ onBeforeMount(async () => {
   await suspenseTagForwards()
   if (tagForwards.value?.results?.length) {
     forwards.value = [...tagForwards.value.results]
+  } else {
+    forwards.value = [{}]
   }
 })
 

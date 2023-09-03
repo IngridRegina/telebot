@@ -28,13 +28,11 @@ import { useGetMessageForwardsQuery} from '@/queries/message-forwarder.query'
 import MessageForward from '@/components/MessageForward.vue'
 import { onBeforeMount, ref } from "vue"
 
-const forwardCount = ref(1)
-const forwards = ref([''])
+const forwards = ref([])
 
 const { data: messageForwards, suspense: suspenseMessageForwards } = useGetMessageForwardsQuery()
 
 const addForwardItem = () => {
-  forwardCount.value++
   forwards.value.push({})
 }
 
@@ -42,6 +40,8 @@ onBeforeMount(async () => {
   await suspenseMessageForwards()
   if (messageForwards.value?.results?.length) {
     forwards.value = [...messageForwards.value.results]
+  } else {
+    forwards.value = [{}]
   }
 })
 
