@@ -16,13 +16,16 @@
           autocomplete="current-password"
           :rules="[required]"
       />
-      <v-btn color="light-blue-darken-2" type="submit">Log in</v-btn>
+
       <v-alert
           v-if="showLoginError"
+          class="mb-2"
           density="compact"
           type="error"
+          color="red-lighten-1"
           text="Invalid username or password"
       />
+      <v-btn color="light-blue-darken-2" type="submit">Log in</v-btn>
     </v-card>
   </v-form>
 </template>
@@ -45,10 +48,10 @@ const form = reactive({
   username: '',
   password: '',
 })
-const submit = () => {
+const submit = async () => {
   if (isFormValid.value) {
     try {
-      authStore.login({ username: form.username, password: form.password })
+      await authStore.login({ username: form.username, password: form.password })
     } catch (e) {
       showLoginError.value = true
     }
@@ -63,6 +66,7 @@ const submit = () => {
   height: 100vh;
   justify-content: center;
   align-items: center;
+  padding: 16px;
 
   &__card {
     padding: 32px;
@@ -71,6 +75,7 @@ const submit = () => {
     flex-direction: column;
     align-items: stretch;
     width: 400px;
+    max-width: 100%;
   }
 
   &__logo {
