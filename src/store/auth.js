@@ -55,7 +55,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function logout(next) {
-    await axios.post('/api/v1/auth/logout/')
+    await axios.post('/api/logout/')
     await logoutLocallyAndRedirectToLogin(next)
   }
 

@@ -8,7 +8,7 @@
         <v-list-item :exact="true" title="Message Forwarder" to="/" />
         <v-list-item title="Tag Grouper" to="/tag-grouper" />
         <v-list-item title="Tag Forwarder" to="/tag-forwarder" />
-        <v-list-item title="Log out" append-icon="mdi-logout" @click="logOut" />
+        <v-list-item title="Log out" append-icon="mdi-logout" @click="authStore.logout()" />
       </v-list>
     </v-navigation-drawer>
     <v-main class="authorized-layout__main">
@@ -19,12 +19,10 @@
 
 <script setup>
 import { ref } from 'vue'
-const drawer = ref(false)
+import { useAuthStore } from "@/store/auth"
 
-const logOut = () => {
-  localStorage.removeItem('tb-token')
-  window.location.href = '/'
-}
+const drawer = ref(false)
+const authStore = useAuthStore()
 </script>
 
 <style lang="scss" scoped>
