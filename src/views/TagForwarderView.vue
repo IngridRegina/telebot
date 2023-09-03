@@ -11,6 +11,7 @@
           :to-chats="forward.to_chats"
           :allowed-users="forward.allowed_users"
           @delete="deleteForwardRow(index)"
+          @upsert="(item) => updateForwardRow(index, item)"
       />
       <v-btn
           color="#2e86c1"
@@ -36,7 +37,7 @@ const { data: tagForwards, suspense: suspenseTagForwards } = useGetTagForwardsQu
 
 const addForwardItem = () => {
   forwardCount.value++
-  forwards.value.push(forwardCount.value)
+  forwards.value.push({})
 }
 
 onBeforeMount(async () => {
@@ -48,6 +49,10 @@ onBeforeMount(async () => {
 
 const deleteForwardRow = (index) => {
   forwards.value.splice(index, 1)
+}
+
+const updateForwardRow = (index, item) => {
+  forwards.value.splice(index, 1, item)
 }
 </script>
 

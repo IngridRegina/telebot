@@ -76,7 +76,6 @@ import {
   reactive,
   watch,
   ref,
-  onBeforeMount
 } from 'vue'
 import {
   useCreateTagGroupMutation,
@@ -90,7 +89,7 @@ const { mutateAsync: editTagGroupMutation } = useEditTagGroupMutation()
 const { mutateAsync: deleteTagGroup } = useDeleteTagGroupMutation()
 const { showSnackbar, isSnackbarVisible, snackbarColor, snackbarMessage } = useSnackbar()
 
-const emits = defineEmits(['delete'])
+const emits = defineEmits(['delete', 'upsert'])
 
 const props = defineProps({
   tag: {
@@ -151,6 +150,7 @@ const createOrEditTagGroup = async (form) => {
     try {
       const editedTagGroup = await editTagGroupMutation(form)
       Object.assign(form, editedTagGroup)
+      emits('upsert', form)
       showSnackbar('Tag group successfully edited', 'green-darken-2')
       isEditing.value = false
     } catch (e) {
@@ -160,6 +160,7 @@ const createOrEditTagGroup = async (form) => {
     try {
       const newTagGroup = await createTagGroupMutation(form)
       Object.assign(form, newTagGroup)
+      emits('upsert', form)
       showSnackbar('Tag group successfully created', 'green-darken-2')
       isEditing.value = false
     } catch (e) {
@@ -168,13 +169,11 @@ const createOrEditTagGroup = async (form) => {
   }
 }
 
-onBeforeMount(() => {
-  watch(() => [props.tag, props.usernames, props.tagId], ([newTag, newUsernames, newTagId]) => {
-    form.tag = newTag
-    form.usernames = newUsernames
-    form.id = newTagId
-    isEditing.value = false
-  })
+watch(() => [props.tag, props.usernames, props.tagId], ([newTag, newUsernames, newTagId]) => {
+  form.tag = newTag
+  form.usernames = newUsernames
+  form.id = newTagId
+  isEditing.value = false
 })
 </script>
 

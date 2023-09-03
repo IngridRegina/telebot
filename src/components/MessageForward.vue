@@ -1,6 +1,5 @@
 <template>
   <v-form
-      :id="'messageForward_' + index"
       class="telebot-form"
       :disabled="!isEditing"
       @submit.prevent="createOrEditMessageForward(form)"
@@ -79,7 +78,6 @@ import {
   reactive,
   watch,
   ref,
-  onBeforeMount
 } from 'vue'
 import {
   useCreateMessageForwardMutation,
@@ -93,7 +91,7 @@ const { mutateAsync: editMessageForwardMutation } = useEditMessageForwardMutatio
 const { mutateAsync: deleteForward } = useDeleteMessageForwardMutation()
 const { showSnackbar, isSnackbarVisible, snackbarColor, snackbarMessage } = useSnackbar()
 
-const emits = defineEmits(['delete'])
+const emits = defineEmits(['delete', 'upsert'])
 
 const props = defineProps({
   fromChat: {
@@ -139,9 +137,9 @@ const handleWantToDeleteForward = async () => {
   }
 }
 
-const handleDeleteForward = async (forwardId) => {
+const handleDeleteForward = async () => {
   try {
-    await deleteForward(forwardId)
+    await deleteForward(form.id)
     emits('delete')
     isConfirmationDialogOpen.value = false
   } catch (e) {
@@ -154,6 +152,7 @@ const createOrEditMessageForward = async (form) => {
     try {
       const editedForward = await editMessageForwardMutation(form)
       Object.assign(form, editedForward)
+      emits('upsert', form)
       showSnackbar('Message forward successfully edited', 'green-darken-2')
       isEditing.value = false
     } catch (e) {
@@ -163,6 +162,7 @@ const createOrEditMessageForward = async (form) => {
     try {
       const newForward = await createMessageForwardMutation(form)
       Object.assign(form, newForward)
+      emits('upsert', form)
       showSnackbar('Message forward successfully created', 'green-darken-2')
       isEditing.value = false
     } catch (e) {
@@ -171,13 +171,11 @@ const createOrEditMessageForward = async (form) => {
   }
 }
 
-onBeforeMount(() => {
-  watch(() => [props.fromChat, props.toChats, props.forwardId], ([newFromChat, newToChats, newForwardId]) => {
-    form.from_chat = newFromChat
-    form.to_chats = newToChats
-    form.id = newForwardId
-    isEditing.value = false
-  })
+watch(() => [props.fromChat, props.toChats, props.forwardId], ([newFromChat, newToChats, newForwardId]) => {
+  form.from_chat = newFromChat
+  form.to_chats = newToChats
+  form.id = newForwardId
+  isEditing.value = false
 })
 </script>
 

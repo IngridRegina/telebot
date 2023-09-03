@@ -85,7 +85,6 @@ import {
   reactive,
   watch,
   ref,
-  onBeforeMount
 } from 'vue'
 import {
   useCreateTagForwardMutation,
@@ -99,7 +98,7 @@ const { mutateAsync: editTagForwardMutation } = useEditTagForwardMutation()
 const { mutateAsync: deleteTagForward } = useDeleteTagForwardMutation()
 const { showSnackbar, isSnackbarVisible, snackbarColor, snackbarMessage } = useSnackbar()
 
-const emits = defineEmits(['delete'])
+const emits = defineEmits(['delete', 'upsert'])
 
 const props = defineProps({
   tag: {
@@ -165,6 +164,7 @@ const createOrEditTagForward = async (form) => {
     try {
       const editedTagForward = await editTagForwardMutation(form)
       Object.assign(form, editedTagForward)
+      emits('upsert', form)
       showSnackbar('Tag forward successfully edited', 'green-darken-2')
       isEditing.value = false
     } catch (error) {
@@ -174,6 +174,7 @@ const createOrEditTagForward = async (form) => {
     try {
       const newTagForward = await createTagForwardMutation(form)
       Object.assign(form, newTagForward)
+      emits('upsert', form)
       showSnackbar('Tag forward successfully created', 'green-darken-2')
       isEditing.value = false
     } catch (error) {
@@ -182,14 +183,12 @@ const createOrEditTagForward = async (form) => {
   }
 }
 
-onBeforeMount(() => {
-  watch(() => [props.tag, props.toChats, props.forwardId, props.allowedUsers], ([newTag, newToChats, newTagId, newAllowedUsers]) => {
-    form.tag = newTag
-    form.to_chats = newToChats
-    form.allowed_users = newAllowedUsers
-    form.id = newTagId
-    isEditing.value = false
-  })
+watch(() => [props.tag, props.toChats, props.forwardId, props.allowedUsers], ([newTag, newToChats, newTagId, newAllowedUsers]) => {
+  form.tag = newTag
+  form.to_chats = newToChats
+  form.allowed_users = newAllowedUsers
+  form.id = newTagId
+  isEditing.value = false
 })
 </script>
 

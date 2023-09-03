@@ -10,6 +10,7 @@
           :from-chat="forward.from_chat"
           :to-chats="forward.to_chats"
           @delete="deleteForwardRow(index)"
+          @upsert="(item) => updateForwardRow(index, item)"
       />
       <v-btn
           color="#2e86c1"
@@ -35,7 +36,7 @@ const { data: messageForwards, suspense: suspenseMessageForwards } = useGetMessa
 
 const addForwardItem = () => {
   forwardCount.value++
-  forwards.value.push(forwardCount.value)
+  forwards.value.push({})
 }
 
 onBeforeMount(async () => {
@@ -47,6 +48,10 @@ onBeforeMount(async () => {
 
 const deleteForwardRow = async (index) => {
   forwards.value.splice(index, 1)
+}
+
+const updateForwardRow = async (index, item) => {
+  forwards.value.splice(index, 1, item)
 }
 </script>
 

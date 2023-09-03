@@ -10,6 +10,7 @@
           :usernames="group.usernames"
           :index="index + 1"
           @delete="deleteTagGroupRow(index)"
+          @upsert="(item) => updateTagGroupRow(index, item)"
       />
       <v-btn
           color="#2e86c1"
@@ -35,7 +36,7 @@ const { data: tagGroups, suspense: suspenseTagGroups } = useGetTagGroupsQuery()
 
 const addTagGroupRow = () => {
   tagGroupCount.value++
-  groups.value.push(tagGroupCount.value)
+  groups.value.push({})
 }
 
 onBeforeMount(async () => {
@@ -47,6 +48,10 @@ onBeforeMount(async () => {
 
 const deleteTagGroupRow = (index) => {
   groups.value.splice(index, 1)
+}
+
+const updateTagGroupRow = (index, item) => {
+  groups.value.splice(index, 1, item)
 }
 </script>
 
