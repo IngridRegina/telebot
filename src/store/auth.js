@@ -71,6 +71,5 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     login,
     logout,
-    logoutLocallyAndRedirectToLogin,
   }
 })
