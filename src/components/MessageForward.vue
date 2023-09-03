@@ -48,7 +48,7 @@
     <v-dialog v-model="isConfirmationDialogOpen" width="auto">
       <v-card>
         <v-card-text>
-          Are you sure you want to delete this message forward?
+          Are you sure you want to delete this message forward rule?
         </v-card-text>
         <v-card-actions>
           <v-btn color="light-blue-darken-2" @click="isConfirmationDialogOpen = false">Cancel</v-btn>
