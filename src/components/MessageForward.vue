@@ -124,7 +124,7 @@ const rules = [
   },
 ]
 
-const isEditing = ref()
+const isEditing = ref(!props.forwardId)
 const isConfirmationDialogOpen = ref(false)
 
 const handleWantToDeleteForward = async () => {
