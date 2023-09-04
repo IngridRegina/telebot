@@ -4,7 +4,7 @@
     <div class="telebot-view__list">
       <TagGroupRow
           v-for="(group, index) in groups"
-          :key="'tag-group-' + index"
+          :key="'tag-group-' + (group.id || group.uniqueKey)"
           :tag-id="group.id"
           :tag="group.tag"
           :usernames="group.usernames"
@@ -33,7 +33,7 @@ const groups = ref([])
 const { data: tagGroups, suspense: suspenseTagGroups } = useGetTagGroupsQuery()
 
 const addTagGroupRow = () => {
-  groups.value.push({})
+  groups.value.push({ uniqueKey: Date.now() })
 }
 
 onBeforeMount(async () => {
@@ -41,7 +41,7 @@ onBeforeMount(async () => {
   if (tagGroups.value?.results?.length) {
     groups.value = [...tagGroups.value.results]
   } else {
-    groups.value = [{}]
+    addTagGroupRow()
   }
 })
 

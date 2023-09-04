@@ -4,7 +4,7 @@
     <div class="telebot-view__list">
       <TagForwardRow
           v-for="(forward, index) in forwards"
-          :key="'tag-forward-' + index"
+          :key="'tag-forward-' + (forward.id || forward.uniqueKey)"
           :forward-id="forward.id"
           :tag="forward.tag"
           :to-chats="forward.to_chats"
@@ -34,7 +34,7 @@ const forwards = ref([])
 const { data: tagForwards, suspense: suspenseTagForwards } = useGetTagForwardsQuery()
 
 const addForwardItem = () => {
-  forwards.value.push({})
+  forwards.value.push({ uniqueKey: Date.now() })
 }
 
 onBeforeMount(async () => {
@@ -42,7 +42,7 @@ onBeforeMount(async () => {
   if (tagForwards.value?.results?.length) {
     forwards.value = [...tagForwards.value.results]
   } else {
-    forwards.value = [{}]
+    addForwardItem()
   }
 })
 

@@ -4,7 +4,7 @@
     <div class="telebot-view__list">
       <MessageForward
           v-for="(forward, index) in forwards"
-          :key="'message-forward-' + index"
+          :key="'message-forward-' + (forward.id || forward.uniqueKey)"
           :forward-id="forward.id"
           :from-chat="forward.from_chat"
           :to-chats="forward.to_chats"
@@ -33,7 +33,7 @@ const forwards = ref([])
 const { data: messageForwards, suspense: suspenseMessageForwards } = useGetMessageForwardsQuery()
 
 const addForwardItem = () => {
-  forwards.value.push({})
+  forwards.value.push({ uniqueKey: Date.now() })
 }
 
 onBeforeMount(async () => {
@@ -41,7 +41,7 @@ onBeforeMount(async () => {
   if (messageForwards.value?.results?.length) {
     forwards.value = [...messageForwards.value.results]
   } else {
-    forwards.value = [{}]
+    addForwardItem()
   }
 })
 
