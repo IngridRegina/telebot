@@ -21,7 +21,13 @@ export default function setAxiosDefaults() {
       return response
     },
     function (error) {
-      return Promise.reject(error)
+        // Any status codes that falls outside the range of 2xx cause this function to trigger
+        if (error.response?.status === 401) {
+          const authStore = useAuthStore()
+          authStore.logoutLocallyAndRedirectToLogin(window.location.pathname)
+        }
+
+        return Promise.reject(error)
     },
   )
 }
