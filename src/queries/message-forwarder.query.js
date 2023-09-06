@@ -14,9 +14,7 @@ export function useGetMessageForwardsQuery() {
 export function useCreateMessageForwardMutation() {
   return useMutation({
     mutationFn: async (form) => {
-      const { data } = await axios.post(
-        '/api/forwardings/', form,
-      )
+      const { data } = await axios.post('/api/forwardings/', form)
       return data
     },
   })
@@ -30,12 +28,10 @@ export function useEditMessageForwardMutation() {
         return
       }
 
-      const { data } = await axios.put(
-        `/api/forwardings/${form.id}/`, {
-          from_chat: form.from_chat,
-          to_chats: form.to_chats
-        },
-      )
+      const { data } = await axios.put(`/api/forwardings/${form.id}/`, {
+        from_chat: form.from_chat,
+        to_chats: form.to_chats,
+      })
       return data
     },
     onSuccess: () => {

@@ -14,9 +14,7 @@ export function useGetTagGroupsQuery() {
 export function useCreateTagGroupMutation() {
   return useMutation({
     mutationFn: async (form) => {
-      const { data } = await axios.post(
-        '/api/tag-groups/', form,
-      )
+      const { data } = await axios.post('/api/tag-groups/', form)
       return data
     },
   })
@@ -30,12 +28,10 @@ export function useEditTagGroupMutation() {
         return
       }
 
-      const { data } = await axios.put(
-        `/api/tag-groups/${form.id}/`, {
-          tag: form.tag,
-          usernames: form.usernames
-        },
-      )
+      const { data } = await axios.put(`/api/tag-groups/${form.id}/`, {
+        tag: form.tag,
+        usernames: form.usernames,
+      })
       return data
     },
     onSuccess: () => {

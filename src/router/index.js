@@ -9,7 +9,7 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
-      component: () => import('@/views/NotFoundView.vue')
+      component: () => import('@/views/NotFoundView.vue'),
     },
     {
       path: '/login',
@@ -37,12 +37,11 @@ const router = createRouter({
       beforeEnter: [isLoggedIn],
       component: () => import('@/views/TagForwarderView.vue'),
       meta: { layout: AuthorizedLayout },
-    }
-  ]
+    },
+  ],
 })
 
 export default router
-
 
 function isLoggedOut() {
   const authStore = useAuthStore()
