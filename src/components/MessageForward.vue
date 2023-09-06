@@ -3,7 +3,7 @@
     v-model="isFormValid"
     class="telebot-form"
     :disabled="!isEditing"
-    @submit.prevent="createOrEditMessageForward(form)"
+    @submit.prevent="saveMessageForward"
   >
     <v-text-field
       v-model="form.from_chat"
@@ -22,16 +22,24 @@
       :rules="rules"
       required
     />
-    <v-btn v-if="isEditing" color="light-blue-darken-2" type="submit">Save</v-btn>
+    <v-btn v-if="isEditing" color="light-blue-darken-2" type="submit" aria-label="Save">Save</v-btn>
     <v-btn
       v-if="form.id && !isEditing"
       color="light-blue-darken-2"
       type="button"
+      aria-label="Edit"
       @click="isEditing = true"
     >
       Edit
     </v-btn>
-    <v-btn color="red-lighten-1" type="button" @click="handleWantToDeleteForward">Delete</v-btn>
+    <v-btn
+      color="red-lighten-1"
+      type="button"
+      aria-label="Delete"
+      @click="handleWantToDeleteForward"
+    >
+      Delete
+    </v-btn>
     <v-dialog v-model="isConfirmationDialogOpen" width="auto">
       <v-card>
         <v-card-text>Are you sure you want to delete this message forward rule?</v-card-text>
@@ -88,6 +96,13 @@ const props = defineProps({
   },
 })
 
+const isConfirmationDialogOpen = ref(false)
+
+// Checking by forwardId prop to determine if it is a new forward or an existing one
+// New rows should always automatically be in edit mode
+const isEditing = ref(!props.forwardId)
+
+// This is used by Vuetify in the background. The form is valid if all fields pass validation.
 const isFormValid = ref(false)
 
 const form = reactive({
@@ -104,13 +119,12 @@ const rules = [
   },
 ]
 
-const isEditing = ref(!props.forwardId)
-const isConfirmationDialogOpen = ref(false)
-
 const handleWantToDeleteForward = async () => {
   if (form.id) {
+    // If the message forward has an ID, open the confirmation dialog
     isConfirmationDialogOpen.value = true
   } else {
+    // If there's no ID, emit the 'delete' event directly (used for new unsaved message forward rows)
     emits('delete')
   }
 }
@@ -118,35 +132,57 @@ const handleWantToDeleteForward = async () => {
 const handleDeleteForward = async () => {
   try {
     await deleteForward(form.id)
+
+    // Emit the 'delete' event to notify the parent component
     emits('delete')
+
     isConfirmationDialogOpen.value = false
   } catch (e) {
     showSnackbar('Error deleting message forward', 'red-lighten-1')
   }
 }
 
-const createOrEditMessageForward = async (form) => {
+const editMessageForward = async () => {
+  try {
+    const editedForward = await editMessageForwardMutation(form)
+
+    // Update the form data with the newly created message forward
+    Object.assign(form, editedForward)
+
+    // Emit the 'upsert' event to notify the parent component of the update
+    emits('upsert', form)
+
+    showSnackbar('Message forward successfully edited', 'green-darken-2')
+    isEditing.value = false
+  } catch (e) {
+    showSnackbar('Error editing message forward', 'red-lighten-1')
+  }
+}
+
+const createMessageForward = async () => {
+  try {
+    const newForward = await createMessageForwardMutation(form)
+
+    // Update the form data with the created message forward
+    Object.assign(form, newForward)
+
+    // Emit the 'upsert' event to notify the parent component of the update
+    emits('upsert', form)
+    showSnackbar('Message forward successfully created', 'green-darken-2')
+    isEditing.value = false
+  } catch (e) {
+    showSnackbar('Error creating message forward', 'red-lighten-1')
+  }
+}
+
+const saveMessageForward = async () => {
   if (isFormValid.value) {
     if (form.id) {
-      try {
-        const editedForward = await editMessageForwardMutation(form)
-        Object.assign(form, editedForward)
-        emits('upsert', form)
-        showSnackbar('Message forward successfully edited', 'green-darken-2')
-        isEditing.value = false
-      } catch (e) {
-        showSnackbar('Error editing message forward', 'red-lighten-1')
-      }
+      // If the message forward has an ID, trigger the edit process
+      await editMessageForward()
     } else {
-      try {
-        const newForward = await createMessageForwardMutation(form)
-        Object.assign(form, newForward)
-        emits('upsert', form)
-        showSnackbar('Message forward successfully created', 'green-darken-2')
-        isEditing.value = false
-      } catch (e) {
-        showSnackbar('Error creating message forward', 'red-lighten-1')
-      }
+      // If there's no ID, trigger the creation process
+      await createMessageForward()
     }
   }
 }

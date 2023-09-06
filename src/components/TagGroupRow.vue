@@ -3,7 +3,7 @@
     v-model="isFormValid"
     class="telebot-form"
     :disabled="!isEditing"
-    @submit.prevent="createOrEditTagGroup(form)"
+    @submit.prevent="saveTagGroup"
   >
     <v-text-field v-model="form.tag" class="telebot-form__input" label="@Tag" :rules="rules" />
     <v-combobox
@@ -15,7 +15,7 @@
       closable-chips
       :rules="rules"
     />
-    <v-btn v-if="isEditing" color="light-blue-darken-2" type="submit">Save</v-btn>
+    <v-btn v-if="isEditing" color="light-blue-darken-2" type="submit" aria-label="Save">Save</v-btn>
     <v-btn
       v-if="form.id && !isEditing"
       color="light-blue-darken-2"
@@ -24,15 +24,28 @@
     >
       Edit
     </v-btn>
-    <v-btn color="red-lighten-1" type="button" @click="handleWantToDeleteTagGroup">Delete</v-btn>
+    <v-btn
+      color="red-lighten-1"
+      type="button"
+      aria-label="Delete"
+      @click="handleWantToDeleteTagGroup"
+    >
+      Delete
+    </v-btn>
     <v-dialog v-model="isConfirmationDialogOpen" width="auto">
       <v-card>
         <v-card-text>Are you sure you want to delete this tag group rule?</v-card-text>
         <v-card-actions>
-          <v-btn color="light-blue-darken-2" @click="isConfirmationDialogOpen = false">
+          <v-btn
+            color="light-blue-darken-2"
+            aria-label="Cancel"
+            @click="isConfirmationDialogOpen = false"
+          >
             Cancel
           </v-btn>
-          <v-btn color="red-lighten-1" @click="handleDeleteTagGroup(form.id)">Delete</v-btn>
+          <v-btn color="red-lighten-1" aria-label="Delete" @click="handleDeleteTagGroup(form.id)">
+            Delete
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -44,7 +57,12 @@
     >
       {{ snackbarMessage }}
       <template #actions>
-        <v-btn color="white" icon="mdi-close" @click="isSnackbarVisible = false" />
+        <v-btn
+          color="white"
+          icon="mdi-close"
+          aria-label="close"
+          @click="isSnackbarVisible = false"
+        />
       </template>
     </v-snackbar>
   </v-form>
@@ -81,6 +99,13 @@ const props = defineProps({
   },
 })
 
+const isConfirmationDialogOpen = ref(false)
+
+// Checking by tagId prop to determine if it is a new tag group or an existing one
+// New rows should always automatically be in edit mode
+const isEditing = ref(!props.tagId)
+
+// This is used by Vuetify in the background. The form is valid if all fields pass validation.
 const isFormValid = ref(false)
 
 const rules = [
@@ -97,13 +122,12 @@ const form = reactive({
   id: props.tagId || undefined,
 })
 
-const isEditing = ref(!props.tagId)
-const isConfirmationDialogOpen = ref(false)
-
 const handleWantToDeleteTagGroup = async () => {
   if (form.id) {
+    // If the tag group is already saved in the database, we need to confirm the deletion
     isConfirmationDialogOpen.value = true
   } else {
+    // If the tag group is not saved in the database, we can just delete it
     emits('delete')
   }
 }
@@ -111,6 +135,8 @@ const handleWantToDeleteTagGroup = async () => {
 const handleDeleteTagGroup = async (tagId) => {
   try {
     await deleteTagGroup(tagId)
+
+    // Emit the 'delete' event to the parent component
     emits('delete')
   } catch (e) {
     showSnackbar('Error deleting tag group', 'red-lighten-1')
@@ -118,28 +144,48 @@ const handleDeleteTagGroup = async (tagId) => {
   isConfirmationDialogOpen.value = false
 }
 
-const createOrEditTagGroup = async (form) => {
+const editTagGroup = async () => {
+  try {
+    const editedTagGroup = await editTagGroupMutation(form)
+
+    // Update the form with the new values
+    Object.assign(form, editedTagGroup)
+
+    // Emit the 'upsert' event to the parent component
+    emits('upsert', form)
+
+    showSnackbar('Tag group successfully edited', 'green-darken-2')
+    isEditing.value = false
+  } catch (e) {
+    showSnackbar('Error editing tag group', 'red-lighten-1')
+  }
+}
+
+const createTagGroup = async () => {
+  try {
+    const newTagGroup = await createTagGroupMutation(form)
+
+    // Update the form with the new values
+    Object.assign(form, newTagGroup)
+
+    // Emit the 'upsert' event to the parent component
+    emits('upsert', form)
+
+    showSnackbar('Tag group successfully created', 'green-darken-2')
+    isEditing.value = false
+  } catch (e) {
+    showSnackbar('Error creating tag group', 'red-lighten-1')
+  }
+}
+
+const saveTagGroup = async () => {
   if (isFormValid.value) {
     if (form.id) {
-      try {
-        const editedTagGroup = await editTagGroupMutation(form)
-        Object.assign(form, editedTagGroup)
-        emits('upsert', form)
-        showSnackbar('Tag group successfully edited', 'green-darken-2')
-        isEditing.value = false
-      } catch (e) {
-        showSnackbar('Error editing tag group', 'red-lighten-1')
-      }
+      // If the tag group has an ID, trigger the edit process
+      await editTagGroup()
     } else {
-      try {
-        const newTagGroup = await createTagGroupMutation(form)
-        Object.assign(form, newTagGroup)
-        emits('upsert', form)
-        showSnackbar('Tag group successfully created', 'green-darken-2')
-        isEditing.value = false
-      } catch (e) {
-        showSnackbar('Error creating tag group', 'red-lighten-1')
-      }
+      // If there's no ID, trigger the creation process
+      await createTagGroup()
     }
   }
 }

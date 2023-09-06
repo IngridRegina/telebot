@@ -25,7 +25,7 @@
         color="red-lighten-1"
         text="Invalid username or password"
       />
-      <v-btn color="light-blue-darken-2" type="submit">Log in</v-btn>
+      <v-btn color="light-blue-darken-2" type="submit" aria-label="Log in">Log in</v-btn>
     </v-card>
   </v-form>
 </template>
