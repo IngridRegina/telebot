@@ -2,47 +2,51 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
 import MessageForwarderView from '@/views/MessageForwarderView.vue'
 import AuthorizedLayout from '@/layouts/AuthorizedLayout.vue'
+import TagGrouperView from '@/views/TagGrouperView.vue'
+import LoginView from '@/views/LoginView.vue'
+import TagForwarderView from '@/views/TagForwarderView.vue'
+import NotFoundView from '@/views/NotFoundView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/:pathMatch(.*)*',
-      name: 'NotFound',
-      component: () => import('@/views/NotFoundView.vue')
-    },
-    {
       path: '/login',
       name: 'login',
-      beforeEnter: [isLoggedOut],
-      component: () => import('@/views/LoginView.vue'),
+      component: LoginView,
+      beforeEnter: isLoggedOut,
     },
     {
       path: '/',
-      name: 'messageForwarder',
-      beforeEnter: [isLoggedIn],
-      component: MessageForwarderView,
       meta: { layout: AuthorizedLayout },
+      beforeEnter: isLoggedIn,
+      children: [
+        {
+          path: '',
+          name: 'messageForwarder',
+          component: MessageForwarderView,
+        },
+        {
+          path: 'tag-grouper',
+          name: 'tagGrouper',
+          component: TagGrouperView,
+        },
+        {
+          path: 'tag-forwarder',
+          name: 'tagForwarder',
+          component: TagForwarderView,
+        },
+      ],
     },
     {
-      path: '/tag-grouper',
-      name: 'tagGrouper',
-      beforeEnter: [isLoggedIn],
-      component: () => import('@/views/TagGrouperView.vue'),
-      meta: { layout: AuthorizedLayout },
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: NotFoundView,
     },
-    {
-      path: '/tag-forwarder',
-      name: 'tagForwarder',
-      beforeEnter: [isLoggedIn],
-      component: () => import('@/views/TagForwarderView.vue'),
-      meta: { layout: AuthorizedLayout },
-    }
-  ]
+  ],
 })
 
 export default router
-
 
 function isLoggedOut() {
   const authStore = useAuthStore()

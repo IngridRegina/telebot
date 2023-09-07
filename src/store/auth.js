@@ -10,9 +10,7 @@ export const useAuthStore = defineStore('auth', () => {
   const router = useRouter()
   const route = useRoute()
 
-  const token = ref(
-    localStorage.getItem(TOKEN_KEY) || undefined,
-  )
+  const token = ref(localStorage.getItem(TOKEN_KEY) || undefined)
   const user = ref()
 
   const isAuthenticated = computed(() => !!token.value)

@@ -3,21 +3,21 @@
     <h1 class="text-h4 mb-10">Tag Grouper</h1>
     <div class="telebot-view__list">
       <TagGroupRow
-          v-for="(group, index) in groups"
-          :key="'tag-group-' + (group.id || group.uniqueKey)"
-          :tag-id="group.id"
-          :tag="group.tag"
-          :usernames="group.usernames"
-          @delete="deleteTagGroupRow(index)"
-          @upsert="(item) => updateTagGroupRow(index, item)"
+        v-for="(group, index) in groups"
+        :key="'tag-group-' + (group.id || group.uniqueKey)"
+        :tag-id="group.id"
+        :tag="group.tag"
+        :usernames="group.usernames"
+        @delete="deleteTagGroupRow(index)"
+        @upsert="(item) => updateTagGroupRow(index, item)"
       />
       <v-btn
-          color="light-blue-darken-2"
-          icon="mdi-plus"
-          position="fixed"
-          size="large"
-          variant="elevated"
-          @click="addTagGroupRow"
+        color="light-blue-darken-2"
+        icon="mdi-plus"
+        position="fixed"
+        size="large"
+        variant="elevated"
+        @click="addTagGroupRow"
       />
     </div>
   </section>
@@ -25,8 +25,8 @@
 
 <script setup>
 import { useGetTagGroupsQuery } from '@/queries/tag-grouper.query'
-import { onBeforeMount, ref } from "vue"
-import TagGroupRow from "@/components/TagGroupRow.vue"
+import { onBeforeMount, ref } from 'vue'
+import TagGroupRow from '@/components/TagGroupRow.vue'
 
 const groups = ref([])
 
@@ -55,5 +55,5 @@ const updateTagGroupRow = (index, item) => {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/views/default";
+@import '@/assets/scss/views/default';
 </style>

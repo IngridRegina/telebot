@@ -4,8 +4,8 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" theme="dark">
-      <v-list :nav="true">
-        <v-list-item :exact="true" title="Message Forwarder" to="/" />
+      <v-list nav>
+        <v-list-item exact title="Message Forwarder" to="/" />
         <v-list-item title="Tag Grouper" to="/tag-grouper" />
         <v-list-item title="Tag Forwarder" to="/tag-forwarder" />
         <v-list-item title="Log out" append-icon="mdi-logout" @click="authStore.logout()" />
@@ -19,7 +19,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useAuthStore } from "@/store/auth"
+import { useAuthStore } from '@/store/auth'
 
 const drawer = ref(false)
 const authStore = useAuthStore()
@@ -41,7 +41,8 @@ const authStore = useAuthStore()
     flex: 1;
   }
 
-  .v-navigation-drawer, .v-app-bar {
+  .v-navigation-drawer,
+  .v-app-bar {
     position: fixed !important;
   }
 }

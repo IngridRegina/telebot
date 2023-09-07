@@ -5,8 +5,7 @@ export function useGetTagForwardsQuery() {
   return useQuery({
     queryKey: ['tag-forwards'],
     queryFn: async () => {
-      const { data } = await axios.get('/api/tagforwardings/',
-      )
+      const { data } = await axios.get('/api/tagforwardings/')
       return data
     },
   })
@@ -15,13 +14,11 @@ export function useGetTagForwardsQuery() {
 export function useCreateTagForwardMutation() {
   return useMutation({
     mutationFn: async (form) => {
-      const { data } = await axios.post(
-        '/api/tagforwardings/', {
-          tag: form.tag,
-          to_chats: form.to_chats,
-          allowed_users: form.allowed_users,
-        },
-      )
+      const { data } = await axios.post('/api/tagforwardings/', {
+        tag: form.tag,
+        to_chats: form.to_chats,
+        allowed_users: form.allowed_users,
+      })
       return data
     },
   })
@@ -35,13 +32,11 @@ export function useEditTagForwardMutation() {
         return
       }
 
-      const { data } = await axios.put(
-        `/api/tagforwardings/${form.id}/`, {
-          tag: form.tag,
-          to_chats: form.to_chats,
-          allowed_users: form.allowed_users,
-        },
-      )
+      const { data } = await axios.put(`/api/tagforwardings/${form.id}/`, {
+        tag: form.tag,
+        to_chats: form.to_chats,
+        allowed_users: form.allowed_users,
+      })
       return data
     },
     onSuccess: () => {

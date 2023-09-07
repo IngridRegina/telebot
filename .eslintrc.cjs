@@ -29,5 +29,6 @@ module.exports = {
       },
     ],
     'vue/padding-line-between-blocks': ['error', 'always'],
+    'vue/prefer-true-attribute-shorthand': ["error", "always"],
   },
 }

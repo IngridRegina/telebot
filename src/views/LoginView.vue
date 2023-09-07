@@ -3,29 +3,29 @@
     <v-card class="login__card">
       <h1 class="mb-4">Log in</h1>
       <v-text-field
-          v-model="form.username"
-          label="Username"
-          autocomplete="username"
-          required
-          :rules="[required]"
+        v-model="form.username"
+        label="Username"
+        autocomplete="username"
+        required
+        :rules="[required]"
       />
       <v-text-field
-          v-model="form.password"
-          label="Password"
-          type="password"
-          autocomplete="current-password"
-          :rules="[required]"
+        v-model="form.password"
+        label="Password"
+        type="password"
+        autocomplete="current-password"
+        :rules="[required]"
       />
 
       <v-alert
-          v-if="showLoginError"
-          class="mb-2"
-          density="compact"
-          type="error"
-          color="red-lighten-1"
-          text="Invalid username or password"
+        v-if="showLoginError"
+        class="mb-2"
+        density="compact"
+        type="error"
+        color="red-lighten-1"
+        text="Invalid username or password"
       />
-      <v-btn color="light-blue-darken-2" type="submit">Log in</v-btn>
+      <v-btn color="light-blue-darken-2" type="submit" aria-label="Log in">Log in</v-btn>
     </v-card>
   </v-form>
 </template>
@@ -38,7 +38,7 @@ const authStore = useAuthStore()
 const showLoginError = ref(false)
 const isFormValid = ref(false)
 
-const required = value => {
+const required = (value) => {
   if (value.length) return true
 
   return 'This field is required.'
